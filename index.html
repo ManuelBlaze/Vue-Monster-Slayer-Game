@@ -26,6 +26,7 @@
           ></div>
         </div>
       </section>
+
       <section id="player" class="container">
         <h2>Your Health</h2>
         <div class="healthbar">
@@ -35,6 +36,14 @@
           ></div>
         </div>
       </section>
+
+      <section class="container" v-if="winner">
+        <h2>Game Over!</h2>
+        <h3 v-if="winner === 'monster'">You lost!</h3>
+        <h3 v-else-if="winner === 'player'">You won!</h3>
+        <h3 v-else="winner === 'draw'">It's a draw!</h3>
+      </section>
+
       <section id="controls">
         <button @click="attackMonster">ATTACK</button>
         <button 
@@ -51,6 +60,7 @@
         </button>
         <button>SURRENDER</button>
       </section>
+
       <section id="log" class="container">
         <h2>Battle Log</h2>
         <ul></ul>
