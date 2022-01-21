@@ -112,10 +112,18 @@ const app = Vue.createApp({
   },
   computed: {
     monsterBarStyles() {
-      return { width: this.monsterHealth + '%' };
+      return {
+        width: this.monsterHealth > 0 
+          ? this.monsterHealth + '%'
+          : '0%',
+      };
     },
     playerBarStyles() {
-      return { width: this.playerHealth + '%' };
+      return {
+        width: this.playerHealth > 0 
+          ? this.playerHealth + '%'
+          : '0%',
+      };
     },
     mayUseSpecial() {
       return this.currentRound % 3 !== 0
@@ -125,6 +133,12 @@ const app = Vue.createApp({
     }
   },
   methods: {
+    restart() {
+      this.playerHealth = FULL_HEALTH;
+      this.monsterHealth = FULL_HEALTH;
+      this.currentRound = 0;
+      this.winner = null;
+    },
     attackMonster() {
       // update current round
       this.currentRound ++;
@@ -175,6 +189,9 @@ const app = Vue.createApp({
 
       // call the attack by the monster
       this.attackPlayer();
+    },
+    surrender() {
+      this.winner = 'monster';
     }
   },
 });
