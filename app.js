@@ -88,6 +88,7 @@ const app = Vue.createApp({
       monsterHealth: FULL_HEALTH,
       currentRound: 0,
       winner: null,
+      battleLog: [],
     };
   },
   watch: {
@@ -138,6 +139,7 @@ const app = Vue.createApp({
       this.monsterHealth = FULL_HEALTH;
       this.currentRound = 0;
       this.winner = null;
+      this.battleLog = [];
     },
     attackMonster() {
       // update current round
@@ -149,6 +151,9 @@ const app = Vue.createApp({
       // affect the monster health
       this.monsterHealth -= damage;
 
+      // register action in log
+      this.addLogMsg('Player', 'attack', damage);
+
       // call the attack by the monster
       this.attackPlayer();
     },
@@ -158,6 +163,9 @@ const app = Vue.createApp({
 
       // affect the player health
       this.playerHealth -= damage;
+
+      // register action in log
+      this.addLogMsg('Monster', 'attack', damage);
     },
     specialAttackMonster() {
       // update current round
@@ -168,6 +176,9 @@ const app = Vue.createApp({
 
       // affect the monster health
       this.monsterHealth -= damage;
+
+      // register action in log
+      this.addLogMsg('Player', 'attack', damage);
 
       // call the attack by the monster
       this.attackPlayer();
@@ -187,11 +198,25 @@ const app = Vue.createApp({
         this.playerHealth += heal;
       }
 
+      // register action in log
+      this.addLogMsg('Player', 'heal', heal);
+
       // call the attack by the monster
       this.attackPlayer();
     },
     surrender() {
       this.winner = 'monster';
+
+      // register action in log
+      this.addLogMsg('Player', 'surrender', '');
+    },
+    addLogMsg(who, what, value) {
+      // manage battle log
+      this.battleLog.unshift({
+        actionBy: who,
+        actionType: what,
+        actionValue: value,
+      });
     }
   },
 });
