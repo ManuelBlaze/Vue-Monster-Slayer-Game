@@ -39,6 +39,22 @@ const MIN_DAMAGE_MONSTER = 8;
 const MAX_DAMAGE_MONSTER = 15;
 
 /**
+ * Min special attack damage
+ * @constant
+ * @type {Number}
+ * @default
+ */
+ const MIN_SPECIAL = 10;
+
+ /**
+  * Max special attack damage
+  * @constant
+  * @type {Number}
+  * @default
+  */
+ const MAX_SPECIAL = 25;
+
+/**
  * Returns Damage caused
  * @param {Number} min min possible damage value
  * @param {Number} max max possible damage value
@@ -54,6 +70,7 @@ const app = Vue.createApp({
     return {
       playerHealth: FULL_HEALTH,
       monsterHealth: FULL_HEALTH,
+      currentRound: 0,
     };
   },
   computed: {
@@ -63,9 +80,15 @@ const app = Vue.createApp({
     playerBarStyles() {
       return { width: this.playerHealth + '%' };
     },
+    mayUseSpecial() {
+      return this.currentRound % 3 !== 0
+    }
   },
   methods: {
     attackMonster() {
+      // update current round
+      this.currentRound ++;
+
       // calculate the damage
       const damage = getDamage(MIN_DAMAGE_PLAYER, MAX_DAMAGE_PLAYER);
 
@@ -82,6 +105,19 @@ const app = Vue.createApp({
       // affect the player health
       this.playerHealth -= damage;
     },
+    specialAttackMonster() {
+      // update current round
+      this.currentRound ++;
+
+      // calculate the damage
+      const damage = getDamage(MIN_SPECIAL, MAX_SPECIAL);
+
+      // affect the monster health
+      this.monsterHealth -= damage;
+
+      // call the attack by the monster
+      this.attackPlayer();
+    }
   },
 });
 
