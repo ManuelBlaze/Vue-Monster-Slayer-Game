@@ -44,23 +44,39 @@ const MAX_DAMAGE_MONSTER = 15;
  * @type {Number}
  * @default
  */
- const MIN_SPECIAL = 10;
-
- /**
-  * Max special attack damage
-  * @constant
-  * @type {Number}
-  * @default
-  */
- const MAX_SPECIAL = 25;
+const MIN_SPECIAL = 10;
 
 /**
- * Returns Damage caused
- * @param {Number} min min possible damage value
- * @param {Number} max max possible damage value
- * @returns {Number} Damage caused by player to monster
+ * Max special attack damage
+ * @constant
+ * @type {Number}
+ * @default
  */
-const getDamage = (min, max) => Math.floor(
+const MAX_SPECIAL = 25;
+
+/**
+ * Min heal value
+ * @constant
+ * @type {Number}
+ * @default
+ */
+const MIN_HEAL = 8;
+
+/**
+ * Max heal value
+ * @constant
+ * @type {Number}
+ * @default
+ */
+const MAX_HEAL = 20;
+
+/**
+ * Returns ramdom value
+ * @param {Number} min min possible value
+ * @param {Number} max max possible value
+ * @returns {Number} Random value
+ */
+const getRamdomValue = (min, max) => Math.floor(
   Math.random() * (max - min)
 ) + min;
 
@@ -82,6 +98,9 @@ const app = Vue.createApp({
     },
     mayUseSpecial() {
       return this.currentRound % 3 !== 0
+    },
+    checkPlayerHealth() {
+      return this.playerHealth === FULL_HEALTH;
     }
   },
   methods: {
@@ -90,7 +109,7 @@ const app = Vue.createApp({
       this.currentRound ++;
 
       // calculate the damage
-      const damage = getDamage(MIN_DAMAGE_PLAYER, MAX_DAMAGE_PLAYER);
+      const damage = getRamdomValue(MIN_DAMAGE_PLAYER, MAX_DAMAGE_PLAYER);
 
       // affect the monster health
       this.monsterHealth -= damage;
@@ -100,7 +119,7 @@ const app = Vue.createApp({
     },
     attackPlayer() {
       // calculate the damage
-      const damage = getDamage(MIN_DAMAGE_MONSTER, MAX_DAMAGE_MONSTER);
+      const damage = getRamdomValue(MIN_DAMAGE_MONSTER, MAX_DAMAGE_MONSTER);
 
       // affect the player health
       this.playerHealth -= damage;
@@ -110,10 +129,28 @@ const app = Vue.createApp({
       this.currentRound ++;
 
       // calculate the damage
-      const damage = getDamage(MIN_SPECIAL, MAX_SPECIAL);
+      const damage = getRamdomValue(MIN_SPECIAL, MAX_SPECIAL);
 
       // affect the monster health
       this.monsterHealth -= damage;
+
+      // call the attack by the monster
+      this.attackPlayer();
+    },
+    healPlayer() {
+      // update current round
+      this.currentRound ++;
+
+      // calculate the health value
+      const heal = getRamdomValue(MIN_HEAL, MAX_HEAL);
+
+      // verify if the heal traspass the health limit
+      if (this.playerHealth + heal > FULL_HEALTH) {
+        this.playerHealth = FULL_HEALTH;
+      } else {
+        // heal the player
+        this.playerHealth += heal;
+      }
 
       // call the attack by the monster
       this.attackPlayer();

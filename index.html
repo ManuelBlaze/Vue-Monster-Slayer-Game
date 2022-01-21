@@ -40,8 +40,15 @@
         <button 
           @click="specialAttackMonster"
           :disabled="mayUseSpecial"
-        >SPECIAL ATTACK</button>
-        <button>HEAL</button>
+        >
+          SPECIAL ATTACK
+        </button>
+        <button
+          @click="healPlayer"
+          :disabled="checkPlayerHealth"
+        >
+          HEAL
+        </button>
         <button>SURRENDER</button>
       </section>
       <section id="log" class="container">
